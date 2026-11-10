@@ -16,6 +16,7 @@ import { ConfirmButton } from '../components/ConfirmButton';
 import { ErrorNotice } from '../components/ErrorNotice';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { Logo } from '../components/Logo';
+import { RestartPresentationButton } from '../components/RestartPresentationButton';
 import { Shell } from '../components/Shell';
 import { useCopy } from '../components/useCopy';
 import { useI18n } from '../i18n/I18nProvider';
@@ -490,6 +491,16 @@ export function EditorPage() {
       </div>
 
       <footer className="mx-auto flex max-w-6xl flex-wrap gap-2 border-t-2 border-line px-4 py-6">
+        <RestartPresentationButton
+          disabled={questions.length === 0}
+          onRestart={async () => {
+            await panel.current?.flush();
+            const updated = await api.restartPresentation(id, token);
+            setPresentation(updated);
+            setSelectedId(updated.questions[0]?.id ?? null);
+            setPicking(false);
+          }}
+        />
         {!presentation.accountOwned ? (
           <Button variant="secondary" onClick={() => copyAdmin(adminUrl(id, token))}>
             {copiedAdmin ? t('common.copied') : t('editor.adminLink.copy')}

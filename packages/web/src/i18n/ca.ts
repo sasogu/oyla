@@ -2,6 +2,12 @@ import type { MessageKey } from './en';
 
 /** Catalan UI strings. A missing or extra key is a type error. */
 export const ca: Record<MessageKey, string> = {
+  'presentation.restart': 'Reiniciar el qüestionari',
+  'presentation.restart.hint':
+    'S’esborraran totes les respostes i les puntuacions del qüestionari, i la sessió tornarà a la primera pregunta. Es conserven les preguntes, el codi d’accés i les persones connectades. Aquesta acció no es pot desfer.',
+  'presentation.restart.confirm': 'Esborrar les respostes i reiniciar',
+  'presentation.restart.cancel': 'Cancel·lar',
+
   'account.presentBody':
     'Crea enquestes en directe amb el teu compte docent d’EduTicTac i recupera-les des de qualsevol dispositiu.',
 

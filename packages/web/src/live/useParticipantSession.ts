@@ -7,6 +7,7 @@ import type {
 } from '@oyla/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getParticipantId } from '../lib/participant';
+import { reconnectAfterServerDisconnect } from './reconnect';
 import { createSocket, type OylaSocket } from './socket';
 import { deadlineFrom } from './useCountdown';
 
@@ -53,6 +54,7 @@ export function useParticipantSession(joinCode: string | null): ParticipantSessi
   useEffect(() => {
     if (joinCode === null) return;
     const socket = createSocket();
+    const stopReconnect = reconnectAfterServerDisconnect(socket);
     socketRef.current = socket;
     const participantId = getParticipantId();
 
@@ -93,6 +95,7 @@ export function useParticipantSession(joinCode: string | null): ParticipantSessi
     });
 
     return () => {
+      stopReconnect();
       socket.disconnect();
       socketRef.current = null;
     };

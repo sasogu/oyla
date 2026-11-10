@@ -105,6 +105,12 @@ export async function apiRoutes(app: FastifyInstance, { service, config }: Route
     return reply.status(204).send();
   });
 
+  app.post('/presentations/:id/reset', async (request) => {
+    const { id } = parse(presentationParams, request.params);
+    await requireAdmin(request, service, id, config);
+    return service.restart(id);
+  });
+
   app.get('/presentations/:id/responses', async (request) => {
     const { id } = parse(presentationParams, request.params);
     await requireAdmin(request, service, id, config);

@@ -66,6 +66,8 @@ export const api = {
     request<PresentationDto>('PATCH', `/presentations/${enc(id)}`, { token, body }),
   deletePresentation: (id: string, token: string) =>
     request<void>('DELETE', `/presentations/${enc(id)}`, { token }),
+  restartPresentation: (id: string, token: string) =>
+    request<PresentationDto>('POST', `/presentations/${enc(id)}/reset`, { token }),
   addQuestion: (id: string, token: string, body: CreateQuestionBody) =>
     request<QuestionDto>('POST', `/presentations/${enc(id)}/questions`, { token, body }),
   updateQuestion: (id: string, token: string, questionId: string, body: UpdateQuestionBody) =>

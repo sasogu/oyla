@@ -143,6 +143,34 @@ describe('teacher accounts', () => {
     }
   });
 
+  test('only the owner can restart a questionnaire; unauthorized and cross-site requests preserve answers', async () => {
+    const item = await create();
+    const first = built.service.addQuestion(item.id, { type: 'word-cloud', title: 'First' });
+    const second = built.service.addQuestion(item.id, { type: 'word-cloud', title: 'Second' });
+    built.store.responses.insert(first.id, 'participant', { text: 'One' }, Date.now());
+    built.store.responses.insert(second.id, 'participant', { text: 'Two' }, Date.now());
+    built.service.activate(item.id, second.id);
+    const reset = (h: Record<string, string>) =>
+      built.app.inject({ method: 'POST', url: `/api/presentations/${item.id}/reset`, headers: h });
+    expect((await reset(headers('bob'))).statusCode).toBe(401);
+    expect((await reset(headers('student'))).statusCode).toBe(401);
+    expect((await reset({ origin })).statusCode).toBe(401);
+    expect((await reset({ ...headers(), origin: 'https://evil.example' })).statusCode).toBe(403);
+    expect(built.store.responses.countForPresentation(item.id)).toBe(2);
+    const response = await reset(headers());
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      id: item.id,
+      joinCode: item.joinCode,
+      activeQuestionId: first.id,
+      accountOwned: true,
+    });
+    expect(
+      response.json().questions.map((q: { responseCount: number }) => q.responseCount),
+    ).toEqual([0, 0]);
+    expect(built.store.presentations.owner(item.id)).toBe('oidc:alice');
+  });
+
   test('prevents CSRF for account writes', async () => {
     for (const extra of [
       { origin: 'https://evil.example' },

@@ -36,6 +36,10 @@ computer or server as one Docker container, and your presentations and answers s
 
 ## Features
 
+- **Restart a questionnaire:** from the editor or presenter screen, confirm once to clear all
+  answers and quiz scores and return to the first question. Questions, join code and connected
+  participants are kept. You can still reset just the current question separately.
+
 - **Seven question types:** multiple choice, word cloud, open question, scale, multi-scale
   (several statements on one scale), Q&A with upvotes and a timed quiz with points and a
   leaderboard.

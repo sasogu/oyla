@@ -2,6 +2,12 @@ import type { MessageKey } from './en';
 
 /** German UI strings. A missing or extra key is a type error. */
 export const de: Record<MessageKey, string> = {
+  'presentation.restart': 'Fragebogen neu starten',
+  'presentation.restart.hint':
+    'Alle Antworten und Quizpunkte werden gelöscht und die Sitzung kehrt zur ersten Frage zurück. Fragen, Teilnahmecode und verbundene Personen bleiben erhalten. Dies kann nicht rückgängig gemacht werden.',
+  'presentation.restart.confirm': 'Antworten löschen und neu starten',
+  'presentation.restart.cancel': 'Abbrechen',
+
   'account.presentBody':
     'Erstelle Live-Umfragen mit deinem EduTicTac-Lehrkraftkonto und öffne sie auf jedem Gerät.',
 

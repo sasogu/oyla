@@ -490,6 +490,36 @@ export function createPresentationService({ store, events, config, now = Date.no
       return toPresentationDto(requirePresentation(presentationId));
     },
 
+    restart(presentationId: string): PresentationDto {
+      requirePresentation(presentationId);
+      const questions = store.questions.list(presentationId);
+      const first = questions[0]?.id ?? null;
+      const time = now();
+      store.transaction(() => {
+        for (const question of questions) {
+          store.responses.deleteForQuestion(question.id);
+          store.questions.update(
+            presentationId,
+            question.id,
+            {
+              hiddenKeys: [],
+              answeredKeys: [],
+              openedAt: question.id === first ? time : null,
+            },
+            time,
+          );
+        }
+        store.presentations.setActiveQuestion(presentationId, first, time);
+      });
+      for (const question of questions) {
+        events.emit('responses-cleared', presentationId, question.id);
+        events.emit('results-changed', presentationId, question.id);
+      }
+      events.emit('leaderboard-changed', presentationId);
+      events.emit('state-changed', presentationId);
+      return toPresentationDto(requirePresentation(presentationId));
+    },
+
     resetResults(presentationId: string, questionId: string): void {
       const presentation = requirePresentation(presentationId);
       requireQuestion(presentationId, questionId);

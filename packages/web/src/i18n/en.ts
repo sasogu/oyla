@@ -3,6 +3,12 @@
  * `.other` are plural forms picked by `tn`. `{name}` placeholders are filled by `t` and `tRich`.
  */
 export const en = {
+  'presentation.restart': 'Restart questionnaire',
+  'presentation.restart.hint':
+    'All answers and quiz scores will be deleted and the session will return to the first question. Questions, the join code and connected participants are kept. This cannot be undone.',
+  'presentation.restart.confirm': 'Delete answers and restart',
+  'presentation.restart.cancel': 'Cancel',
+
   'account.presentBody':
     'Create live polls with your EduTicTac teacher account and find them on any device.',
 

@@ -2,6 +2,12 @@ import type { MessageKey } from './en';
 
 /** Spanish UI strings. A missing or extra key is a type error. */
 export const es: Record<MessageKey, string> = {
+  'presentation.restart': 'Reiniciar cuestionario',
+  'presentation.restart.hint':
+    'Se borrarán todas las respuestas y las puntuaciones del cuestionario, y la sesión volverá a la primera pregunta. Se conservan las preguntas, el código de acceso y las personas conectadas. Esta acción no se puede deshacer.',
+  'presentation.restart.confirm': 'Borrar respuestas y reiniciar',
+  'presentation.restart.cancel': 'Cancelar',
+
   'account.presentBody':
     'Crea encuestas en directo con tu cuenta docente de EduTicTac y recupéralas desde cualquier dispositivo.',
 

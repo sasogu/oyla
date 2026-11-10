@@ -108,6 +108,14 @@ test('a teacher recovers a presentation on another device while participants nee
   const code =
     (await page.getByText(/Join code \d{3} \d{3}/).textContent())?.replace(/\D/g, '') ?? '';
   expect(editorUrl).not.toContain('#');
+  const secondQuestion = await alice.request.post(
+    `${base}/api/presentations/${editorUrl.split('/').pop()}/questions`,
+    {
+      headers: { Origin: base },
+      data: { type: 'word-cloud', title: 'A word for today?' },
+    },
+  );
+  expect(secondQuestion.ok()).toBe(true);
 
   const secondDevice = await browser.newContext({ locale: 'en-GB' });
   await secondDevice.addCookies([
@@ -151,6 +159,70 @@ test('a teacher recovers a presentation on another device while participants nee
   await phone.getByRole('button', { name: 'Send vote' }).click();
   await expect(second.getByText('100%', { exact: true })).toBeVisible();
 
+  // Account-owned sessions must reset over both WebSocket and the editor API.
+  await second.getByRole('button', { name: 'Reset results', exact: true }).click();
+  await expect(second.getByText('1 vote', { exact: true })).toBeVisible();
+  await second.getByRole('button', { name: 'Click again to reset', exact: true }).click();
+  await expect(second.getByText('0 votes', { exact: true })).toBeVisible();
+  await expect(phone.getByRole('button', { name: 'Send vote', exact: true })).toBeVisible();
+  await phone.getByText('Yes', { exact: true }).click();
+  await phone.getByRole('button', { name: 'Send vote' }).click();
+  await expect(second.getByText('100%', { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByText('1 answer so far', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Reset results', exact: true }).click();
+  await page.getByRole('button', { name: 'Click again to reset', exact: true }).click();
+  await expect(page.getByText('0 answers so far', { exact: true })).toBeVisible();
+
+  await expect(second.getByText('0 votes', { exact: true })).toBeVisible();
+  await phone.getByText('Yes', { exact: true }).click();
+  await phone.getByRole('button', { name: 'Send vote' }).click();
+  await expect(second.getByText('1 vote', { exact: true })).toBeVisible();
+  await second.getByRole('button', { name: 'Next question', exact: true }).click();
+  await expect(phone.getByRole('heading', { name: 'A word for today?' })).toBeVisible();
+  await phone.getByLabel('Your answer').fill('Calm');
+  await phone.getByRole('button', { name: 'Send', exact: true }).click();
+  await expect(phone.getByRole('heading', { name: 'Answer sent' })).toBeVisible();
+  await expect(second.getByText('Calm: 1 answer', { exact: true })).toBeAttached();
+
+  const id = editorUrl.split('/').pop();
+  const counts = async () =>
+    (await (await alice.request.get(`${base}/api/presentations/${id}`)).json()).questions.map(
+      (q: { responseCount: number }) => q.responseCount,
+    );
+  expect(await counts()).toEqual([1, 1]);
+  await second.getByRole('button', { name: 'Restart questionnaire', exact: true }).click();
+  const restartDialog = second.getByRole('dialog', { name: 'Restart questionnaire' });
+  await expect(restartDialog).toBeVisible();
+  await restartDialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+  expect(await counts()).toEqual([1, 1]);
+
+  // A failed reset must be visible and must keep the confirmation open for a retry.
+  await second.route(`${base}/api/presentations/${id}/reset`, (route) =>
+    route.fulfill({ status: 503, json: { error: { code: 'INTERNAL' } } }),
+  );
+  await second.getByRole('button', { name: 'Restart questionnaire', exact: true }).click();
+  await restartDialog
+    .getByRole('button', { name: 'Delete answers and restart', exact: true })
+    .click();
+  await expect(restartDialog.getByRole('alert')).toBeVisible();
+  expect(await counts()).toEqual([1, 1]);
+  await second.unroute(`${base}/api/presentations/${id}/reset`);
+  await restartDialog
+    .getByRole('button', { name: 'Delete answers and restart', exact: true })
+    .click();
+  await expect(restartDialog).not.toBeVisible();
+  await expect(second.getByRole('heading', { name: 'Can you vote?' })).toBeVisible();
+  await expect(second.getByText('0 votes', { exact: true })).toBeVisible();
+  await expect(phone.getByRole('heading', { name: 'Can you vote?' })).toBeVisible();
+  await expect(phone.getByRole('button', { name: 'Send vote', exact: true })).toBeVisible();
+  expect(await counts()).toEqual([0, 0]);
+  const restarted = await (await alice.request.get(`${base}/api/presentations/${id}`)).json();
+  expect(restarted.joinCode).toBe(code);
+  await phone.getByText('Yes', { exact: true }).click();
+  await phone.getByRole('button', { name: 'Send vote' }).click();
+  await expect(second.getByText('1 vote', { exact: true })).toBeVisible();
+
   await secondDevice.clearCookies();
   await second.goto(editorUrl);
   await expect(
@@ -158,4 +230,44 @@ test('a teacher recovers a presentation on another device while participants nee
   ).toBeVisible();
   await expect(second.getByLabel('Question', { exact: true })).toHaveCount(0);
   for (const context of [alice, secondDevice, bob, audience]) await context.close();
+});
+
+test('reset confirmation stays under the pointer in Spanish', async ({ browser }) => {
+  const context = await browser.newContext({
+    locale: 'es-ES',
+    viewport: { width: 1366, height: 768 },
+  });
+  await context.addCookies([{ name: 'edutictac_oidc', value: 'alice', url: base, httpOnly: true }]);
+  const created = await context.request.post(`${base}/api/presentations`, {
+    headers: { Origin: base },
+    data: { title: 'Reset confirmation' },
+  });
+  const { id } = await created.json();
+  await context.request.post(`${base}/api/presentations/${id}/questions`, {
+    headers: { Origin: base },
+    data: { type: 'word-cloud', title: 'Reinicio' },
+  });
+  const page = await context.newPage();
+  await page.goto(`${base}/present/${id}`);
+  await expect(page.getByRole('heading', { name: 'Reinicio' })).toBeVisible();
+  const reset = page.getByRole('button', { name: 'Reiniciar resultados', exact: true });
+  const before = await reset.boundingBox();
+  if (!before) throw new Error('Reset button is not visible');
+  const x = before.x + before.width / 2;
+  const y = before.y + before.height / 2;
+  await page.mouse.click(x, y);
+  const confirmation = page.getByRole('button', {
+    name: 'Pulsa otra vez para reiniciar',
+    exact: true,
+  });
+  await expect(confirmation).toBeVisible();
+  const after = await confirmation.boundingBox();
+  if (!after) throw new Error('Confirmation is not visible');
+  expect(x).toBeGreaterThanOrEqual(after.x);
+  expect(x).toBeLessThanOrEqual(after.x + after.width);
+  expect(y).toBeGreaterThanOrEqual(after.y);
+  expect(y).toBeLessThanOrEqual(after.y + after.height);
+  await page.mouse.click(x, y);
+  await expect(reset).toBeVisible();
+  await context.close();
 });

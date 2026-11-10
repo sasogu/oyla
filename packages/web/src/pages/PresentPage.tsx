@@ -18,6 +18,7 @@ import { buttonClass } from '../components/Button';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ErrorNotice } from '../components/ErrorNotice';
 import { QrCode } from '../components/QrCode';
+import { RestartPresentationButton } from '../components/RestartPresentationButton';
 import { Shell } from '../components/Shell';
 import { Stamp } from '../components/Stamp';
 import { useI18n } from '../i18n/I18nProvider';
@@ -650,7 +651,7 @@ export function PresentPage() {
         )}
       </main>
 
-      <footer className="flex items-center justify-between gap-[1em] px-[1.5em] py-[0.5em] text-[0.95em]">
+      <footer className="flex flex-wrap items-center justify-between gap-[1em] px-[1.5em] py-[0.5em] text-[0.95em]">
         <div className="flex items-center gap-[1.2em] text-muted">
           <span className="flex items-center gap-[0.4em] font-medium text-ink" aria-live="polite">
             <PeopleIcon />
@@ -661,7 +662,7 @@ export function PresentPage() {
           ) : null}
           <span className="hidden lg:inline">{t('present.keys')}</span>
         </div>
-        <nav className="flex items-center gap-[0.2em]">
+        <nav className="flex flex-wrap items-center justify-end gap-[0.2em]">
           <ControlButton label={t('present.prev')} onClick={() => go(-1)} disabled={index <= 0}>
             <PrevIcon />
           </ControlButton>
@@ -694,7 +695,20 @@ export function PresentPage() {
               <TrophyIcon />
             </ControlButton>
           ) : null}
-          <ResetButton disabled={!active} onReset={() => active && void session.reset(active.id)} />
+          <ResetButton
+            disabled={!active || !session.connected}
+            onReset={() => active && void moderate(session.reset(active.id))}
+          />
+          <RestartPresentationButton
+            disabled={questions.length === 0}
+            onRestart={async () => {
+              const updated = await api.restartPresentation(id, token);
+              setPresentation(updated);
+              setModeratingId(null);
+              setShowBoard(false);
+              setToggleError(null);
+            }}
+          />
           <ControlButton label={t('present.invite')} onClick={() => setInvite(true)}>
             <InviteIcon />
           </ControlButton>

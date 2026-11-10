@@ -2,6 +2,12 @@ import type { MessageKey } from './en';
 
 /** Turkish UI strings. A missing or extra key is a type error. */
 export const tr: Record<MessageKey, string> = {
+  'presentation.restart': 'Anketi yeniden başlat',
+  'presentation.restart.hint':
+    'Tüm yanıtlar ve quiz puanları silinir, oturum ilk soruya döner. Sorular, katılım kodu ve bağlı katılımcılar korunur. Bu işlem geri alınamaz.',
+  'presentation.restart.confirm': 'Yanıtları sil ve yeniden başlat',
+  'presentation.restart.cancel': 'İptal',
+
   'account.presentBody':
     'EduTicTac öğretmen hesabınla canlı anketler oluştur ve her cihazdan eriş.',
 

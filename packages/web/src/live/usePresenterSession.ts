@@ -1,5 +1,6 @@
 import type { Ack, ErrorCode, Leaderboard, ResultsMessage, ThemeKey } from '@oyla/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { reconnectAfterServerDisconnect } from './reconnect';
 import { createSocket, type OylaSocket } from './socket';
 import { deadlineFrom } from './useCountdown';
 
@@ -59,6 +60,7 @@ export function usePresenterSession(
 
   useEffect(() => {
     const socket = createSocket();
+    const stopReconnect = reconnectAfterServerDisconnect(socket);
     socketRef.current = socket;
     const keep = (message: ResultsMessage) =>
       setResults((all) => ({ ...all, [message.questionId]: message }));
@@ -80,6 +82,11 @@ export function usePresenterSession(
           setErrorCode(ack.error.code);
           setStatus(ack.error.code === 'NOT_FOUND' ? 'not-found' : 'unauthorized');
           socket.disconnect();
+          if (ack.error.code === 'UNAUTHORIZED') {
+            // A session may have expired while this tab remained open. Refresh the account
+            // notice too, so the teacher can sign in again instead of seeing stale login state.
+            window.dispatchEvent(new Event('edutictac:sessionchange'));
+          }
         } else {
           setErrorCode(ack.error.code);
           setStatus('error');
@@ -102,6 +109,7 @@ export function usePresenterSession(
     });
 
     return () => {
+      stopReconnect();
       socket.disconnect();
       socketRef.current = null;
     };

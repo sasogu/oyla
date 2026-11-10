@@ -7,8 +7,7 @@ export const en = {
     'Create live polls with your EduTicTac teacher account and find them on any device.',
 
   'account.accessTitle': 'Sign in with the owner account',
-  'account.accessHint':
-    'Sign in with the teacher account that owns this presentation, or open its original private link if it has not been linked to an account.',
+  'account.accessHint': 'Sign in with the teacher account that owns this presentation.',
 
   'account.signIn': 'Sign in with EduTicTac',
   'account.signInHint':
@@ -17,9 +16,6 @@ export const en = {
   'account.savedHint':
     'Your presentations are available on any device and do not expire through inactivity.',
   'account.empty': 'You have no presentations saved in this account yet.',
-  'account.claim': 'Save to my account',
-  'account.claimHint':
-    'This presentation will belong to your account. The old private link will no longer grant editing access.',
   'account.unavailable': 'The account service is unavailable. Try again in a moment.',
 
   'app.tagline': 'Live polls, word clouds and open questions for talks, classes and meetings.',

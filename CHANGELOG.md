@@ -28,16 +28,16 @@ and versions follow [Semantic Versioning](https://semver.org/).
   `Pace: 4; Examples: 5`. Closes [#12].
 - **Optional EduTicTac teacher accounts:** servers configured with the shared identity service let
   teachers sign in to create presentations. Presentations are saved to the account, open on any
-  device and do not expire after inactivity. Existing private-link presentations can be claimed
-  from the editor. Participants still join without an account. See
+  device and do not expire after inactivity. Participants still join without an account. See
   [Configuration](/self-hosting/configuration/#teacher-accounts-optional).
 - **Spanish, Catalan and Valencian interface**, next to English, Turkish and German, with an
   exact `ca-valencia` browser-language match and a six-language switch.
 
 ### Changed
 
-- With teacher accounts enabled, the start page shows only the signed-in account's presentations;
-  the private-link recovery box and the browser-local list are no longer shown there.
+- With teacher accounts enabled, the private-link recovery box, the browser-local list on the
+  start page and the claim action in the editor are removed; presentations belong to the account
+  that created them.
 - Question types gain optional hooks for reactions (`isAnswer`, `allows`, `sharedOnPhones`) and
   for timed, scored types (`timeLimit`, `score`).
 - Database migration `0005` adds `questions.opened_at`, `responses.score` and a `participants`
@@ -46,8 +46,8 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Migration `0006` adds `questions.answered_keys`. Question types gain `canMarkAnswered`, and
   `aggregate` gets an optional context with the answered keys. Q&A entries gain `answered`.
 - Migration `0007` adds `presentation_owners`. Account-owned presentations are exempt from the
-  inactivity cleanup and accept only the owner account; unclaimed presentations keep working with
-  their private admin link. Back up the database before enabling accounts.
+  inactivity cleanup and accept only the owner account; servers without accounts keep the private
+  admin link. Back up the database before enabling accounts.
 
 ### Fixed
 

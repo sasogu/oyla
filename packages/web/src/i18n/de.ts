@@ -6,8 +6,7 @@ export const de: Record<MessageKey, string> = {
     'Erstelle Live-Umfragen mit deinem EduTicTac-Lehrkraftkonto und öffne sie auf jedem Gerät.',
 
   'account.accessTitle': 'Mit dem Eigentümerkonto anmelden',
-  'account.accessHint':
-    'Melde dich mit dem Lehrkraftkonto an, dem diese Präsentation gehört, oder öffne den ursprünglichen privaten Link, falls sie noch keinem Konto zugeordnet ist.',
+  'account.accessHint': 'Melde dich mit dem Lehrkraftkonto an, dem diese Präsentation gehört.',
 
   'account.signIn': 'Mit EduTicTac anmelden',
   'account.signInHint':
@@ -16,9 +15,6 @@ export const de: Record<MessageKey, string> = {
   'account.savedHint':
     'Deine Präsentationen sind auf jedem Gerät verfügbar und verfallen nicht durch Inaktivität.',
   'account.empty': 'In diesem Konto sind noch keine Präsentationen gespeichert.',
-  'account.claim': 'In meinem Konto speichern',
-  'account.claimHint':
-    'Diese Präsentation wird deinem Konto zugeordnet. Der alte private Link gewährt keinen Bearbeitungszugriff mehr.',
   'account.unavailable': 'Der Kontodienst ist nicht verfügbar. Versuche es gleich erneut.',
 
   'app.tagline':

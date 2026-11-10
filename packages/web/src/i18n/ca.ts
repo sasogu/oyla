@@ -6,8 +6,7 @@ export const ca: Record<MessageKey, string> = {
     'Crea enquestes en directe amb el teu compte docent d’EduTicTac i recupera-les des de qualsevol dispositiu.',
 
   'account.accessTitle': 'Accedeix amb el compte propietari',
-  'account.accessHint':
-    'Entra amb el compte docent propietari d’aquesta presentació, o obre l’enllaç privat original si encara no està vinculada a un compte.',
+  'account.accessHint': 'Entra amb el compte docent propietari d’aquesta presentació.',
 
   'account.signIn': 'Entrar amb EduTicTac',
   'account.signInHint':
@@ -16,9 +15,6 @@ export const ca: Record<MessageKey, string> = {
   'account.savedHint':
     'Les teves presentacions estan disponibles des de qualsevol dispositiu i no caduquen per inactivitat.',
   'account.empty': 'Encara no tens presentacions desades en aquest compte.',
-  'account.claim': 'Desar al meu compte',
-  'account.claimHint':
-    'La presentació quedarà vinculada al teu compte. L’enllaç privat antic deixarà de donar accés a l’edició.',
   'account.unavailable':
     'El servei de comptes no està disponible. Torna-ho a provar d’aquí a un moment.',
 

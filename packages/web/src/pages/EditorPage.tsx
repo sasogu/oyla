@@ -96,7 +96,7 @@ export function EditorPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useI18n();
-  const [token, setToken] = useState(() => readKeyFromHash() ?? tokenFor(id) ?? '');
+  const [token] = useState(() => readKeyFromHash() ?? tokenFor(id) ?? '');
   const account = useAccount();
   const [presentation, setPresentation] = useState<PresentationDto | null>(null);
   const [loadError, setLoadError] = useState<ErrorState>(null);
@@ -339,32 +339,9 @@ export function EditorPage() {
         <AdminLinkBanner link={adminUrl(id, token)} onDismiss={() => setShowBanner(false)} />
       ) : null}
 
-      {account.enabled ? (
+      {account.enabled && presentation.accountOwned ? (
         <section className="mx-auto mt-4 max-w-6xl px-4" aria-label={t('home.mine.title')}>
-          {presentation.accountOwned ? (
-            <p role="status">{t('account.saved')}</p>
-          ) : (
-            <div className="flex flex-col gap-3 rounded-xl border-2 border-line bg-paper p-4">
-              <p>{t('account.claimHint')}</p>
-              {account.authenticated ? (
-                <Button
-                  onClick={() =>
-                    run(
-                      api.claimPresentation(id, token).then((loaded) => {
-                        forgetMine(id);
-                        setToken('');
-                        setPresentation(loaded);
-                      }),
-                    )
-                  }
-                >
-                  {t('account.claim')}
-                </Button>
-              ) : (
-                <AccountNotice />
-              )}
-            </div>
-          )}
+          <p role="status">{t('account.saved')}</p>
         </section>
       ) : null}
 

@@ -3,7 +3,7 @@ import { resolveTeacher } from '../central-session';
 import type { AppConfig } from '../config';
 import type { PresentationService } from '../service';
 
-/** Account ownership is checked server-side; only unclaimed presentations accept a legacy key. */
+/** Account ownership is checked server-side; presentations without an owner use the private admin link. */
 export async function requireAdmin(
   request: FastifyRequest,
   service: PresentationService,

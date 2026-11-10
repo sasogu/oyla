@@ -6,8 +6,7 @@ export const tr: Record<MessageKey, string> = {
     'EduTicTac öğretmen hesabınla canlı anketler oluştur ve her cihazdan eriş.',
 
   'account.accessTitle': 'Sahip hesabıyla giriş yap',
-  'account.accessHint':
-    'Bu sunumun sahibi olan öğretmen hesabıyla giriş yap veya henüz bir hesaba bağlı değilse orijinal özel bağlantısını aç.',
+  'account.accessHint': 'Bu sunumun sahibi olan öğretmen hesabıyla giriş yap.',
 
   'account.signIn': 'EduTicTac ile giriş yap',
   'account.signInHint':
@@ -15,9 +14,6 @@ export const tr: Record<MessageKey, string> = {
   'account.saved': 'EduTicTac hesabına kaydedildi.',
   'account.savedHint': 'Sunumların her cihazdan erişilebilir ve kullanılmadıkları için silinmez.',
   'account.empty': 'Bu hesapta henüz kayıtlı sunumun yok.',
-  'account.claim': 'Hesabıma kaydet',
-  'account.claimHint':
-    'Bu sunum hesabına bağlanacak. Eski özel bağlantı artık düzenleme erişimi sağlamayacak.',
   'account.unavailable': 'Hesap hizmetine ulaşılamıyor. Biraz sonra yeniden dene.',
 
   'app.tagline':

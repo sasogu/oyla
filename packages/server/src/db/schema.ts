@@ -43,7 +43,7 @@ export const questions = sqliteTable(
   (table) => [index('questions_presentation_idx').on(table.presentationId, table.position)],
 );
 
-/** Separate table keeps existing presentations and their legacy links intact until claimed. */
+/** Links a presentation to the teacher account that owns it. A presentation without a row uses a private admin link. */
 export const presentationOwners = sqliteTable(
   'presentation_owners',
   {

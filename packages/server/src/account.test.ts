@@ -143,69 +143,7 @@ describe('teacher accounts', () => {
     }
   });
 
-  test('claims a legacy link atomically, preserves questions, disables the link and prevents takeover', async () => {
-    const legacy = built.service.create({ title: 'Legacy' });
-    built.service.addQuestion(legacy.id, { type: 'word-cloud', title: 'Hello' });
-    const claimHeaders = { ...headers(), authorization: `Bearer ${legacy.adminToken}` };
-    expect(
-      (
-        await built.app.inject({
-          method: 'POST',
-          url: `/api/presentations/${legacy.id}/claim`,
-          headers: claimHeaders,
-        })
-      ).statusCode,
-    ).toBe(200);
-    expect(built.service.get(legacy.id).questions).toHaveLength(1);
-    expect(
-      (
-        await built.app.inject({
-          url: `/api/presentations/${legacy.id}`,
-          headers: { authorization: `Bearer ${legacy.adminToken}` },
-        })
-      ).statusCode,
-    ).toBe(401);
-    expect(
-      (
-        await built.app.inject({
-          method: 'POST',
-          url: `/api/presentations/${legacy.id}/claim`,
-          headers: { ...claimHeaders, ...headers('bob') },
-        })
-      ).statusCode,
-    ).toBe(401);
-    expect(
-      (
-        await built.app.inject({
-          method: 'POST',
-          url: `/api/presentations/${legacy.id}/claim`,
-          headers: headers(),
-        })
-      ).statusCode,
-    ).toBe(200);
-    expect(
-      (
-        await built.app.inject({
-          method: 'DELETE',
-          url: `/api/presentations/${legacy.id}`,
-          headers: headers(),
-        })
-      ).statusCode,
-    ).toBe(204);
-    expect(built.store.presentations.mine('oidc:alice')).toEqual([]);
-  });
-
-  test('rejects claim without proof and prevents CSRF for account writes', async () => {
-    const legacy = built.service.create({ title: 'Legacy' });
-    expect(
-      (
-        await built.app.inject({
-          method: 'POST',
-          url: `/api/presentations/${legacy.id}/claim`,
-          headers: headers(),
-        })
-      ).statusCode,
-    ).toBe(401);
+  test('prevents CSRF for account writes', async () => {
     for (const extra of [
       { origin: 'https://evil.example' },
       { origin: '' },
@@ -222,7 +160,6 @@ describe('teacher accounts', () => {
         ).statusCode,
       ).toBe(403);
     }
-    expect(built.store.presentations.owner(legacy.id)).toBeNull();
   });
 
   test('keeps account presentations through retention and fails closed when identity is unavailable', async () => {

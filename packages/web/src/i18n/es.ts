@@ -6,8 +6,7 @@ export const es: Record<MessageKey, string> = {
     'Crea encuestas en directo con tu cuenta docente de EduTicTac y recupéralas desde cualquier dispositivo.',
 
   'account.accessTitle': 'Accede con la cuenta propietaria',
-  'account.accessHint':
-    'Entra con la cuenta docente propietaria de esta presentación, o abre su enlace privado original si todavía no está vinculada a una cuenta.',
+  'account.accessHint': 'Entra con la cuenta docente propietaria de esta presentación.',
 
   'account.signIn': 'Entrar con EduTicTac',
   'account.signInHint':
@@ -16,9 +15,6 @@ export const es: Record<MessageKey, string> = {
   'account.savedHint':
     'Tus presentaciones están disponibles desde cualquier dispositivo y no caducan por inactividad.',
   'account.empty': 'Todavía no tienes presentaciones guardadas en esta cuenta.',
-  'account.claim': 'Guardar en mi cuenta',
-  'account.claimHint':
-    'La presentación quedará vinculada a tu cuenta. El enlace privado antiguo dejará de dar acceso a la edición.',
   'account.unavailable':
     'El servicio de cuentas no está disponible. Vuelve a intentarlo en un momento.',
 

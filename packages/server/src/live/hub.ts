@@ -9,7 +9,7 @@ import { IpLimits, MAX_SOCKETS_PER_IP } from './ip-limits';
 import { registerParticipantHandlers } from './participant';
 import { registerPresenterHandlers } from './presenter';
 import { leaveCurrent } from './session';
-import { type LiveContext, type OylaServer, rooms } from './types';
+import type { LiveContext, OylaServer } from './types';
 
 export function attachLive(
   app: FastifyInstance,
@@ -65,8 +65,6 @@ export function attachLive(
   const onCleared = (presentationId: string, questionId: string) =>
     limits.clearAnswers(presentationId, questionId);
   const onEnded = (presentationId: string) => limits.clearAnswers(presentationId);
-  const onOwnership = (id: string) => io.in(rooms.presenters(id)).disconnectSockets(true);
-  deps.events.on('ownership-changed', onOwnership);
   deps.events.on('responses-cleared', onCleared);
   deps.events.on('presentation-ended', onEnded);
 
@@ -80,7 +78,6 @@ export function attachLive(
   return {
     io,
     close() {
-      deps.events.off('ownership-changed', onOwnership);
       deps.events.off('responses-cleared', onCleared);
       deps.events.off('presentation-ended', onEnded);
       broadcaster.dispose();

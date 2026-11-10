@@ -62,12 +62,6 @@ export async function apiRoutes(app: FastifyInstance, { service, config }: Route
   };
 
   app.get('/account/presentations', async (request) => service.mine((await teacher(request)).id));
-  app.post('/presentations/:id/claim', async (request) => {
-    const { id } = parse(presentationParams, request.params);
-    const identity = await teacher(request);
-    const match = /^Bearer ([A-Za-z0-9_-]{1,100})$/.exec(request.headers.authorization ?? '');
-    return service.claim(id, match?.[1] ?? '', identity.id);
-  });
 
   app.get('/health', { config: { rateLimit: false } }, async () => ({ status: 'ok' }));
 

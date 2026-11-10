@@ -57,8 +57,6 @@ const enc = encodeURIComponent;
 export const api = {
   accountSession: () => request<AccountSessionDto>('GET', '/account/session'),
   accountPresentations: () => request<AccountPresentationDto[]>('GET', '/account/presentations'),
-  claimPresentation: (id: string, token: string) =>
-    request<PresentationDto>('POST', `/presentations/${enc(id)}/claim`, { token }),
   config: () => request<ServerConfigDto>('GET', '/config'),
   createPresentation: (body: CreatePresentationBody) =>
     request<CreatePresentationResult>('POST', '/presentations', { body }),

@@ -374,17 +374,6 @@ export function createPresentationService({ store, events, config, now = Date.no
       return store.presentations.mine(ownerId);
     },
 
-    claim(presentationId: string, adminToken: string, ownerId: string): PresentationDto {
-      store.transaction(() => {
-        const owner = store.presentations.owner(presentationId);
-        if (owner === ownerId) return;
-        this.authenticate(presentationId, adminToken);
-        store.presentations.claim(presentationId, ownerId);
-      });
-      events.emit('ownership-changed', presentationId);
-      return this.get(presentationId);
-    },
-
     get(presentationId: string): PresentationDto {
       const row = requirePresentation(presentationId);
       store.presentations.touch(presentationId, now());

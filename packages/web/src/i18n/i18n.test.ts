@@ -1,10 +1,13 @@
 import { describe, expect, test } from 'vitest';
+import { ca } from './ca';
+import { caValencia } from './ca-valencia';
 import { de } from './de';
 import { en } from './en';
+import { es } from './es';
 import { createTranslator, detectLanguage, interpolate } from './I18nProvider';
 import { tr } from './tr';
 
-const dictionaries = { tr, de };
+const dictionaries = { es, ca, caValencia, tr, de };
 
 describe('dictionaries', () => {
   test('translations have every English key and no empty strings', () => {
@@ -64,5 +67,9 @@ describe('detectLanguage', () => {
     expect(detectLanguage()).toBe('tr');
     localStorage.setItem('oyla:language', JSON.stringify('de'));
     expect(detectLanguage()).toBe('de');
+    localStorage.setItem('oyla:language', JSON.stringify('es'));
+    expect(detectLanguage()).toBe('es');
+    localStorage.setItem('oyla:language', JSON.stringify('ca-valencia'));
+    expect(detectLanguage()).toBe('ca-valencia');
   });
 });

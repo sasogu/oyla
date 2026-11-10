@@ -1,5 +1,14 @@
 import { LANGUAGES, type Language, useI18n } from '../i18n/I18nProvider';
 
+const SHORT_CODES: Record<Language, string> = {
+  es: 'ES',
+  ca: 'CA',
+  'ca-valencia': 'VA',
+  en: 'EN',
+  tr: 'TR',
+  de: 'DE',
+};
+
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useI18n();
   return (
@@ -17,7 +26,7 @@ export function LanguageSwitcher() {
             language === code ? 'bg-brand text-on-brand' : 'text-muted hover:text-ink'
           }`}
         >
-          {code.toUpperCase()}
+          {SHORT_CODES[code]}
         </button>
       ))}
     </fieldset>

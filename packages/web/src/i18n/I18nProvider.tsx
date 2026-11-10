@@ -8,14 +8,31 @@ import {
   useState,
 } from 'react';
 import { readJson, writeJson } from '../lib/storage';
+import { ca } from './ca';
+import { caValencia } from './ca-valencia';
 import { de } from './de';
 import { en, type MessageKey } from './en';
+import { es } from './es';
 import { tr } from './tr';
 
-export const LANGUAGES = { en: 'English', tr: 'Türkçe', de: 'Deutsch' } as const;
+export const LANGUAGES = {
+  es: 'Español',
+  ca: 'Català',
+  'ca-valencia': 'Valencià',
+  en: 'English',
+  tr: 'Türkçe',
+  de: 'Deutsch',
+} as const;
 export type Language = keyof typeof LANGUAGES;
 
-const dictionaries: Record<Language, Record<MessageKey, string>> = { en, tr, de };
+const dictionaries: Record<Language, Record<MessageKey, string>> = {
+  es,
+  ca,
+  'ca-valencia': caValencia,
+  en,
+  tr,
+  de,
+};
 const STORAGE_KEY = 'oyla:language';
 
 type Vars = Record<string, string | number>;
@@ -40,7 +57,10 @@ export function detectLanguage(): Language {
   const preferred =
     typeof navigator === 'undefined' ? [] : (navigator.languages ?? [navigator.language]);
   for (const tag of preferred) {
-    const code = tag?.toLowerCase().split('-')[0];
+    if (!tag) continue;
+    const lower = tag.toLowerCase();
+    if (Object.hasOwn(LANGUAGES, lower)) return lower as Language;
+    const code = lower.split('-')[0];
     if (code && Object.hasOwn(LANGUAGES, code)) return code as Language;
   }
   return 'en';

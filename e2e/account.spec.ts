@@ -116,6 +116,10 @@ test('a teacher recovers a presentation on another device while participants nee
   const second = await secondDevice.newPage();
   await second.goto(base);
   await expect(second.getByText('Saved in my account', { exact: true })).toBeVisible();
+  await expect(second.getByText('Only in this browser', { exact: true })).toHaveCount(0);
+  await expect(
+    second.getByText('Recover a presentation with its private link', { exact: true }),
+  ).toHaveCount(0);
   await second.getByRole('link', { name: 'Open', exact: true }).click();
   await expect(second.getByLabel('Question', { exact: true })).toHaveValue('Can you vote?');
   expect(

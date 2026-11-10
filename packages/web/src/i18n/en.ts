@@ -20,9 +20,6 @@ export const en = {
   'account.claim': 'Save to my account',
   'account.claimHint':
     'This presentation will belong to your account. The old private link will no longer grant editing access.',
-  'account.import': 'Recover a presentation with its private link',
-  'account.importHint': 'Paste the complete private administration link.',
-  'account.browser': 'Only in this browser',
   'account.unavailable': 'The account service is unavailable. Try again in a moment.',
 
   'app.tagline': 'Live polls, word clouds and open questions for talks, classes and meetings.',

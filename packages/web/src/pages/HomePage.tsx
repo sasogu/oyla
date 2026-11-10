@@ -152,10 +152,12 @@ export function HomePage() {
               </Link>
             </div>
           ) : null}
-          <h3 className="mt-4 text-lg font-semibold">{t('home.mine.title')}</h3>
-          <AccountPresentations />
-          {account.enabled ? <h4 className="font-medium">{t('account.browser')}</h4> : null}
-          <MyPresentations />
+          {(!account.enabled || account.authenticated) && !account.loading ? (
+            <>
+              <h3 className="mt-4 text-lg font-semibold">{t('home.mine.title')}</h3>
+              {account.enabled ? <AccountPresentations /> : <MyPresentations />}
+            </>
+          ) : null}
         </section>
       </div>
       <footer className="mt-16 text-sm text-muted md:mt-12">

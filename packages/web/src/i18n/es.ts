@@ -19,9 +19,6 @@ export const es: Record<MessageKey, string> = {
   'account.claim': 'Guardar en mi cuenta',
   'account.claimHint':
     'La presentación quedará vinculada a tu cuenta. El enlace privado antiguo dejará de dar acceso a la edición.',
-  'account.import': 'Recuperar una presentación con su enlace privado',
-  'account.importHint': 'Pega el enlace privado de administración completo.',
-  'account.browser': 'Solo en este navegador',
   'account.unavailable':
     'El servicio de cuentas no está disponible. Vuelve a intentarlo en un momento.',
 

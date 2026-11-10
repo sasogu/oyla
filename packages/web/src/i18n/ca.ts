@@ -19,9 +19,6 @@ export const ca: Record<MessageKey, string> = {
   'account.claim': 'Desar al meu compte',
   'account.claimHint':
     'La presentació quedarà vinculada al teu compte. L’enllaç privat antic deixarà de donar accés a l’edició.',
-  'account.import': 'Recuperar una presentació amb l’enllaç privat',
-  'account.importHint': 'Enganxa l’enllaç privat d’administració complet.',
-  'account.browser': 'Només en aquest navegador',
   'account.unavailable':
     'El servei de comptes no està disponible. Torna-ho a provar d’aquí a un moment.',
 

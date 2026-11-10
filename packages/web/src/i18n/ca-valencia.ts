@@ -19,9 +19,6 @@ export const caValencia: Record<MessageKey, string> = {
   'account.claim': 'Guardar en el meu compte',
   'account.claimHint':
     'La presentació quedarà vinculada al teu compte. L’enllaç privat antic deixarà de donar accés a l’edició.',
-  'account.import': 'Recuperar una presentació amb l’enllaç privat',
-  'account.importHint': 'Apega l’enllaç privat d’administració complet.',
-  'account.browser': 'Només en este navegador',
   'account.unavailable':
     'El servici de comptes no està disponible. Torna a intentar-ho en un moment.',
 

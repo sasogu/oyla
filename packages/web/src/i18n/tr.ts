@@ -18,9 +18,6 @@ export const tr: Record<MessageKey, string> = {
   'account.claim': 'Hesabıma kaydet',
   'account.claimHint':
     'Bu sunum hesabına bağlanacak. Eski özel bağlantı artık düzenleme erişimi sağlamayacak.',
-  'account.import': 'Özel bağlantıyla sunum kurtar',
-  'account.importHint': 'Özel yönetim bağlantısının tamamını yapıştır.',
-  'account.browser': 'Yalnızca bu tarayıcıda',
   'account.unavailable': 'Hesap hizmetine ulaşılamıyor. Biraz sonra yeniden dene.',
 
   'app.tagline':

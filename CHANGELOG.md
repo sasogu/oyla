@@ -29,13 +29,15 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - **Optional EduTicTac teacher accounts:** servers configured with the shared identity service let
   teachers sign in to create presentations. Presentations are saved to the account, open on any
   device and do not expire after inactivity. Existing private-link presentations can be claimed
-  from the editor or by pasting their complete link on the start page. Participants still join
-  without an account. See [Configuration](/self-hosting/configuration/#teacher-accounts-optional).
+  from the editor. Participants still join without an account. See
+  [Configuration](/self-hosting/configuration/#teacher-accounts-optional).
 - **Spanish, Catalan and Valencian interface**, next to English, Turkish and German, with an
   exact `ca-valencia` browser-language match and a six-language switch.
 
 ### Changed
 
+- With teacher accounts enabled, the start page shows only the signed-in account's presentations;
+  the private-link recovery box and the browser-local list are no longer shown there.
 - Question types gain optional hooks for reactions (`isAnswer`, `allows`, `sharedOnPhones`) and
   for timed, scored types (`timeLimit`, `score`).
 - Database migration `0005` adds `questions.opened_at`, `responses.score` and a `participants`

@@ -62,7 +62,7 @@ account is the only way to edit or present them; no admin link is needed.
 
 - A presentation created while signed in is saved to the account automatically.
 - To keep an older presentation, open it with its private admin link and select **Save to my
-  account** in the editor. You can also paste the complete private link on the start page.
+  account** in the editor.
 - Saving requires both the teacher session and the original private key. Afterwards the old admin
   link stops working and open presenter screens using it are disconnected.
 - Presentations saved to an account do not expire after inactivity. Deleting one still deletes its

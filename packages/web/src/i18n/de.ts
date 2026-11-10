@@ -19,9 +19,6 @@ export const de: Record<MessageKey, string> = {
   'account.claim': 'In meinem Konto speichern',
   'account.claimHint':
     'Diese Präsentation wird deinem Konto zugeordnet. Der alte private Link gewährt keinen Bearbeitungszugriff mehr.',
-  'account.import': 'Präsentation mit privatem Link wiederherstellen',
-  'account.importHint': 'Füge den vollständigen privaten Verwaltungslink ein.',
-  'account.browser': 'Nur in diesem Browser',
   'account.unavailable': 'Der Kontodienst ist nicht verfügbar. Versuche es gleich erneut.',
 
   'app.tagline':

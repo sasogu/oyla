@@ -120,11 +120,10 @@ repository and never expose the internal session resolver through the public pro
 
 With this integration enabled, teachers sign in to create presentations. **My presentations**
 lists presentations owned by that account, without storing administration keys in the browser.
-Existing presentations can be saved to the account from the editor or recovered by pasting their
-complete private administration link on the home page. Claiming requires both a teacher session
-and the original private key; afterwards, only the owner account grants editing and presenter
-access. The old private link stops working. Account-owned presentations are excluded from the
-inactivity cleanup. Deleting one explicitly still deletes its questions and responses.
+Existing presentations can be saved to the account from the editor. Claiming requires both a
+teacher session and the original private key; afterwards, only the owner account grants editing
+and presenter access. The old private link stops working. Account-owned presentations are excluded
+from the inactivity cleanup. Deleting one explicitly still deletes its questions and responses.
 
 Session validation applies to HTTP editing, exports and every live presenter command. Cross-origin
 writes are rejected, and open presenter connections are periodically checked for session revocation.

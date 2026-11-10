@@ -36,6 +36,7 @@ export function forgetMine(id: string): void {
     KEY,
     listMine().filter((item) => item.id !== id),
   );
+  window.dispatchEvent(new Event('oyla:presentationschange'));
 }
 
 export function tokenFor(id: string): string | null {

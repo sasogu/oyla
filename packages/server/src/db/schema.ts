@@ -43,6 +43,18 @@ export const questions = sqliteTable(
   (table) => [index('questions_presentation_idx').on(table.presentationId, table.position)],
 );
 
+/** Separate table keeps existing presentations and their legacy links intact until claimed. */
+export const presentationOwners = sqliteTable(
+  'presentation_owners',
+  {
+    presentationId: text('presentation_id')
+      .primaryKey()
+      .references(() => presentations.id, { onDelete: 'cascade' }),
+    ownerId: text('owner_id').notNull(),
+  },
+  (table) => [index('presentation_owners_owner_idx').on(table.ownerId)],
+);
+
 export const responses = sqliteTable(
   'responses',
   {

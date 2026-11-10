@@ -34,7 +34,10 @@ export async function buildApp(config: AppConfig, options: BuildOptions = {}): P
   const service = createPresentationService({ store, events, config });
 
   const app = Fastify({
-    logger: { level: config.logLevel, redact: ['req.headers.authorization'] },
+    logger: {
+      level: config.logLevel,
+      redact: ['req.headers.authorization', 'req.headers.cookie', 'res.headers.set-cookie'],
+    },
     bodyLimit: 64 * 1024,
     // Trusting only the first N hops makes Fastify read the client IP from the right end of
     // X-Forwarded-For, where the trusted proxy wrote it, instead of the spoofable left end.
@@ -47,11 +50,15 @@ export async function buildApp(config: AppConfig, options: BuildOptions = {}): P
       useDefaults: false,
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", ...(config.central ? [config.central.publicUrl] : [])],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          ...(config.central ? [config.central.publicUrl] : []),
+        ],
         imgSrc: ["'self'", 'data:'],
         fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", ...(config.central ? [config.central.publicUrl] : [])],
         mediaSrc: ["'self'"],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],

@@ -1,7 +1,9 @@
+import { readFileSync } from 'node:fs';
 import { z } from 'zod';
 import { defaultWebDist } from './paths';
 
 export interface AppConfig {
+  central?: { url: string; token: string; publicUrl: string; origin: string };
   port: number;
   host: string;
   dbPath: string;
@@ -54,6 +56,20 @@ const envSchema = z.object({
 });
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
+  let central: AppConfig['central'];
+  if (env.OYLA_CENTRAL_SESSION_URL) {
+    const url = new URL(env.OYLA_CENTRAL_SESSION_URL);
+    const publicUrl = new URL(env.OYLA_COMMONS_URL ?? 'https://commons.edutictac.es').origin;
+    const origin = new URL(env.OYLA_PUBLIC_URL ?? 'https://oyla.edutictac.es').origin;
+    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) {
+      throw new Error('Invalid OYLA_CENTRAL_SESSION_URL');
+    }
+    const token = env.OYLA_APP_TOKEN_FILE
+      ? readFileSync(env.OYLA_APP_TOKEN_FILE, 'utf8').trim()
+      : env.OYLA_APP_TOKEN;
+    if (!token || token.length < 24) throw new Error('Missing OYLA_APP_TOKEN_FILE');
+    central = { url: url.origin, token, publicUrl, origin };
+  }
   const parsed = envSchema.safeParse(env);
   if (!parsed.success) {
     const problems = parsed.error.issues
@@ -63,6 +79,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   }
   const values = parsed.data;
   return {
+    ...(central ? { central } : {}),
     port: values.PORT,
     host: values.HOST,
     dbPath: values.OYLA_DB_PATH,

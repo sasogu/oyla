@@ -298,6 +298,7 @@ export function createPresentationService({ store, events, config, now = Date.no
   function toPresentationDto(row: PresentationRow): PresentationDto {
     const counts = store.responses.countsByPresentation(row.id);
     return {
+      ...(store.presentations.owner(row.id) ? { accountOwned: true } : {}),
       id: row.id,
       title: row.title,
       theme: toThemeKey(row.theme),
@@ -311,7 +312,7 @@ export function createPresentationService({ store, events, config, now = Date.no
   }
 
   return {
-    create(input: CreatePresentationBody): CreatePresentationResult {
+    create(input: CreatePresentationBody, ownerId?: string): CreatePresentationResult {
       if (config.createPassword !== null) {
         if (!input.password) {
           throw new AppError('CREATE_PASSWORD_REQUIRED', 401, 'This server needs a password');
@@ -324,27 +325,64 @@ export function createPresentationService({ store, events, config, now = Date.no
       const id = randomId(12);
       const joinCode = generateJoinCode((code) => store.presentations.joinCodeExists(code));
       const time = now();
-      store.presentations.insert({
+      store.transaction(() => {
+        store.presentations.insert({
+          id,
+          joinCode,
+          title: input.title,
+          theme: DEFAULT_THEME,
+          resultsOnPhones: false,
+          adminTokenHash: hashToken(adminToken),
+          activeQuestionId: null,
+          createdAt: time,
+          updatedAt: time,
+          lastActivityAt: time,
+        });
+        if (ownerId) store.presentations.claim(id, ownerId);
+      });
+      return {
         id,
         joinCode,
-        title: input.title,
-        theme: DEFAULT_THEME,
-        resultsOnPhones: false,
-        adminTokenHash: hashToken(adminToken),
-        activeQuestionId: null,
-        createdAt: time,
-        updatedAt: time,
-        lastActivityAt: time,
-      });
-      return { id, joinCode, adminToken };
+        adminToken: ownerId ? '' : adminToken,
+        ...(ownerId ? { accountOwned: true } : {}),
+      };
     },
 
     authenticate(presentationId: string, adminToken: string): PresentationRow {
       const row = requirePresentation(presentationId);
-      if (!verifyToken(adminToken, row.adminTokenHash)) {
+      if (
+        store.presentations.owner(presentationId) ||
+        !verifyToken(adminToken, row.adminTokenHash)
+      ) {
         throw new AppError('UNAUTHORIZED', 401, 'Invalid admin link');
       }
       return row;
+    },
+
+    authorize(presentationId: string, adminToken: string, ownerId?: string): PresentationRow {
+      const row = requirePresentation(presentationId);
+      const owner = store.presentations.owner(presentationId);
+      if (owner) {
+        if (owner !== ownerId)
+          throw new AppError('UNAUTHORIZED', 401, 'Sign in with the owner account');
+        return row;
+      }
+      return this.authenticate(presentationId, adminToken);
+    },
+
+    mine(ownerId: string) {
+      return store.presentations.mine(ownerId);
+    },
+
+    claim(presentationId: string, adminToken: string, ownerId: string): PresentationDto {
+      store.transaction(() => {
+        const owner = store.presentations.owner(presentationId);
+        if (owner === ownerId) return;
+        this.authenticate(presentationId, adminToken);
+        store.presentations.claim(presentationId, ownerId);
+      });
+      events.emit('ownership-changed', presentationId);
+      return this.get(presentationId);
     },
 
     get(presentationId: string): PresentationDto {

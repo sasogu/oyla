@@ -48,7 +48,8 @@ computer or server as one Docker container, and your presentations and answers s
 - **Download the results** as a CSV file that opens in any spreadsheet app.
 - **No accounts:** creating a presentation gives you a private admin link. Optionally, the server
   owner can require a password to create presentations.
-- **English, Turkish and German** interface, light and dark mode.
+- **Spanish, Catalan, Valencian, English, Turkish and German** interface, light and dark mode.
+- **Optional EduTicTac teacher accounts:** recover presentations on any device, keep them without inactivity expiry, and claim existing presentations using their private link. Participants still join without an account.
 - **Small and self-contained:** one Node.js process, one SQLite file, no external services.
 - **Easy to extend:** a question type is one shared definition plus three React components.
 
@@ -103,6 +104,32 @@ npm start            # http://localhost:3000
 More in the [configuration docs](https://oyla.mefby.com/self-hosting/configuration/).
 
 ## How it works
+
+### EduTicTac accounts (optional)
+
+The EduTicTac deployment uses the shared account chip and validates the signed central session
+on the server. Configure `OYLA_CENTRAL_SESSION_URL` with the internal identity-service origin,
+`OYLA_APP_TOKEN_FILE` with a mounted application-token file, `OYLA_COMMONS_URL` with the public
+Commons origin and `OYLA_PUBLIC_URL` with Oyla's public origin. Keep the token outside the
+repository and never expose the internal session resolver through the public proxy.
+
+With this integration enabled, teachers sign in to create presentations. **My presentations**
+lists presentations owned by that account, without storing administration keys in the browser.
+Existing presentations can be saved to the account from the editor or recovered by pasting their
+complete private administration link on the home page. Claiming requires both a teacher session
+and the original private key; afterwards, only the owner account grants editing and presenter
+access. The old private link stops working. Account-owned presentations are excluded from the
+inactivity cleanup. Deleting one explicitly still deletes its questions and responses.
+
+Session validation applies to HTTP editing, exports and every live presenter command. Cross-origin
+writes are rejected, and open presenter connections are periodically checked for session revocation.
+Identity-service failures deny account access. The public join flow does not require a session.
+Without the configuration above, the original private-link workflow remains available.
+
+The additive SQLite migration creates `presentation_owners` without changing existing questions,
+responses or private links. Back up the database before deploying. After users start saving to
+accounts, roll back to an account-aware version; an old private-link-only version would not enforce
+the new ownership records.
 
 ```
  Phones ──────────┐

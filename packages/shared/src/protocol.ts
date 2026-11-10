@@ -103,7 +103,7 @@ export const responseSubmitSchema = z.object({
 
 export const presenterJoinSchema = z.object({
   presentationId: entityId,
-  adminToken: z.string().min(1).max(100),
+  adminToken: z.string().max(100).default(''),
 });
 
 export const presenterActivateSchema = z.object({

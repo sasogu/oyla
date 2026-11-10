@@ -10,6 +10,7 @@ import type { IpLimits } from './ip-limits';
 export interface SocketData {
   /** Client address as used for limits (see client-ip.ts). Set when the socket connects. */
   ip?: string;
+  adminToken?: string;
   role?: 'participant' | 'presenter';
   presentationId?: string;
   participantId?: string;

@@ -7,13 +7,17 @@ import { AppError, asAppError } from '../app-error';
  * Runs a socket handler and always answers through the acknowledgement callback.
  * Errors never escape: expected ones become error codes, unexpected ones are logged.
  */
-export function handle<T extends object>(log: FastifyBaseLogger, ack: unknown, run: () => T): void {
+export async function handle<T extends object>(
+  log: FastifyBaseLogger,
+  ack: unknown,
+  run: () => T | Promise<T>,
+): Promise<void> {
   if (typeof ack !== 'function') {
     return;
   }
   const reply = ack as (result: Ack<T>) => void;
   try {
-    reply({ ok: true, ...run() });
+    reply({ ok: true, ...(await run()) });
   } catch (error) {
     const expected = asAppError(error);
     if (expected) {

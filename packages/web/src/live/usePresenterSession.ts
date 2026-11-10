@@ -58,7 +58,6 @@ export function usePresenterSession(
   const [results, setResults] = useState<Record<string, ResultsMessage>>({});
 
   useEffect(() => {
-    if (!adminToken) return;
     const socket = createSocket();
     socketRef.current = socket;
     const keep = (message: ResultsMessage) =>
@@ -66,7 +65,7 @@ export function usePresenterSession(
 
     socket.on('connect', () => {
       setConnected(true);
-      socket.emit('presenter:join', { presentationId, adminToken }, (ack) => {
+      socket.emit('presenter:join', { presentationId, adminToken: adminToken ?? '' }, (ack) => {
         if (ack.ok) {
           setTheme(ack.theme);
           setActiveQuestionId(ack.activeQuestionId);

@@ -50,6 +50,16 @@ export interface I18n {
 }
 
 export function detectLanguage(): Language {
+  const shared =
+    typeof document === 'undefined'
+      ? null
+      : document.cookie
+          .split('; ')
+          .find((part) => part.startsWith('edutictac_language='))
+          ?.split('=')[1];
+  if (shared === 'va') return 'ca-valencia';
+  if (shared && Object.hasOwn(LANGUAGES, shared)) return shared as Language;
+
   const stored = readJson<unknown>(STORAGE_KEY, null);
   if (typeof stored === 'string' && Object.hasOwn(LANGUAGES, stored)) {
     return stored as Language;
@@ -99,7 +109,29 @@ export function I18nProvider({ children, initial }: { children: ReactNode; initi
   const setLanguage = useCallback((next: Language) => {
     writeJson(STORAGE_KEY, next);
     setLanguageState(next);
+    if (location.hostname === 'edutictac.es' || location.hostname.endsWith('.edutictac.es')) {
+      // biome-ignore lint/suspicious/noDocumentCookie: shared preference must also work in browsers without Cookie Store
+      document.cookie = `edutictac_language=${next === 'ca-valencia' ? 'va' : next}; Domain=.edutictac.es; Path=/; Max-Age=31536000; SameSite=Lax; Secure`;
+    }
+    window.dispatchEvent(new CustomEvent('edutictac:langchange'));
   }, []);
+
+  useEffect(() => {
+    const host = window as Window & {
+      edutictacLanguage?: { languages: string[]; get(): string; set(language: string): void };
+    };
+    host.edutictacLanguage = {
+      languages: ['ca', 'va', 'es', 'en'],
+      get: () => (language === 'ca-valencia' ? 'va' : language),
+      set: (next) => {
+        const code = next === 'va' ? 'ca-valencia' : next;
+        if (Object.hasOwn(LANGUAGES, code)) setLanguage(code as Language);
+      },
+    };
+    return () => {
+      delete host.edutictacLanguage;
+    };
+  }, [language, setLanguage]);
 
   const value = useMemo<I18n>(
     () => ({ language, setLanguage, ...createTranslator(language) }),

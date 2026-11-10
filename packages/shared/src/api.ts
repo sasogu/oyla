@@ -48,6 +48,7 @@ export const reorderQuestionsBody = z.object({
 export type ReorderQuestionsBody = z.infer<typeof reorderQuestionsBody>;
 
 export interface CreatePresentationResult {
+  accountOwned?: boolean;
   id: string;
   joinCode: string;
   adminToken: string;
@@ -65,6 +66,7 @@ export interface QuestionDto {
 }
 
 export interface PresentationDto {
+  accountOwned?: boolean;
   id: string;
   title: string;
   theme: ThemeKey;
@@ -97,9 +99,26 @@ export interface ResponsesExportDto {
 }
 
 export interface ServerConfigDto {
+  accountEnabled?: boolean;
   createPasswordRequired: boolean;
   retentionDays: number;
   limits: typeof LIMITS;
+}
+
+export interface AccountSessionDto {
+  enabled: boolean;
+  authenticated: boolean;
+  displayName: string;
+  commonsUrl: string | null;
+  loginUrl: string | null;
+}
+
+export interface AccountPresentationDto {
+  id: string;
+  title: string;
+  joinCode: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface ApiErrorBody {

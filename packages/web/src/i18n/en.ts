@@ -3,6 +3,25 @@
  * `.other` are plural forms picked by `tn`. `{name}` placeholders are filled by `t` and `tRich`.
  */
 export const en = {
+  'account.accessTitle': 'Sign in with the owner account',
+  'account.accessHint':
+    'Sign in with the teacher account that owns this presentation, or open its original private link if it has not been linked to an account.',
+
+  'account.signIn': 'Sign in with EduTicTac',
+  'account.signInHint':
+    'Sign in with your teacher account to create presentations and find them on any device.',
+  'account.saved': 'Saved in your EduTicTac account.',
+  'account.savedHint':
+    'Your presentations are available on any device and do not expire through inactivity.',
+  'account.empty': 'You have no presentations saved in this account yet.',
+  'account.claim': 'Save to my account',
+  'account.claimHint':
+    'This presentation will belong to your account. The old private link will no longer grant editing access.',
+  'account.import': 'Recover a presentation with its private link',
+  'account.importHint': 'Paste the complete private administration link.',
+  'account.browser': 'Only in this browser',
+  'account.unavailable': 'The account service is unavailable. Try again in a moment.',
+
   'app.tagline': 'Live polls, word clouds and open questions for talks, classes and meetings.',
   'app.home': 'Oyla start page',
   'lang.label': 'Language',

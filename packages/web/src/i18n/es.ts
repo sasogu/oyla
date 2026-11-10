@@ -2,6 +2,26 @@ import type { MessageKey } from './en';
 
 /** Spanish UI strings. A missing or extra key is a type error. */
 export const es: Record<MessageKey, string> = {
+  'account.accessTitle': 'Accede con la cuenta propietaria',
+  'account.accessHint':
+    'Entra con la cuenta docente propietaria de esta presentación, o abre su enlace privado original si todavía no está vinculada a una cuenta.',
+
+  'account.signIn': 'Entrar con EduTicTac',
+  'account.signInHint':
+    'Entra con tu cuenta docente para crear presentaciones y recuperarlas desde cualquier dispositivo.',
+  'account.saved': 'Guardada en tu cuenta de EduTicTac.',
+  'account.savedHint':
+    'Tus presentaciones están disponibles desde cualquier dispositivo y no caducan por inactividad.',
+  'account.empty': 'Todavía no tienes presentaciones guardadas en esta cuenta.',
+  'account.claim': 'Guardar en mi cuenta',
+  'account.claimHint':
+    'La presentación quedará vinculada a tu cuenta. El enlace privado antiguo dejará de dar acceso a la edición.',
+  'account.import': 'Recuperar una presentación con su enlace privado',
+  'account.importHint': 'Pega el enlace privado de administración completo.',
+  'account.browser': 'Solo en este navegador',
+  'account.unavailable':
+    'El servicio de cuentas no está disponible. Vuelve a intentarlo en un momento.',
+
   'app.tagline':
     'Encuestas en directo, nubes de palabras y preguntas abiertas para charlas, clases y reuniones.',
   'app.home': 'Página de inicio de Oyla',

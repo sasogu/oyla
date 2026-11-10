@@ -2,6 +2,25 @@ import type { MessageKey } from './en';
 
 /** German UI strings. A missing or extra key is a type error. */
 export const de: Record<MessageKey, string> = {
+  'account.accessTitle': 'Mit dem Eigentümerkonto anmelden',
+  'account.accessHint':
+    'Melde dich mit dem Lehrkraftkonto an, dem diese Präsentation gehört, oder öffne den ursprünglichen privaten Link, falls sie noch keinem Konto zugeordnet ist.',
+
+  'account.signIn': 'Mit EduTicTac anmelden',
+  'account.signInHint':
+    'Melde dich mit deinem Lehrkraftkonto an, um Präsentationen zu erstellen und auf jedem Gerät zu öffnen.',
+  'account.saved': 'In deinem EduTicTac-Konto gespeichert.',
+  'account.savedHint':
+    'Deine Präsentationen sind auf jedem Gerät verfügbar und verfallen nicht durch Inaktivität.',
+  'account.empty': 'In diesem Konto sind noch keine Präsentationen gespeichert.',
+  'account.claim': 'In meinem Konto speichern',
+  'account.claimHint':
+    'Diese Präsentation wird deinem Konto zugeordnet. Der alte private Link gewährt keinen Bearbeitungszugriff mehr.',
+  'account.import': 'Präsentation mit privatem Link wiederherstellen',
+  'account.importHint': 'Füge den vollständigen privaten Verwaltungslink ein.',
+  'account.browser': 'Nur in diesem Browser',
+  'account.unavailable': 'Der Kontodienst ist nicht verfügbar. Versuche es gleich erneut.',
+
   'app.tagline':
     'Live-Umfragen, Wortwolken und offene Fragen für Vorträge, Unterricht und Meetings.',
   'app.home': 'Oyla-Startseite',

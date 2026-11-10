@@ -1,5 +1,8 @@
-import { type FormEvent, useId, useState } from 'react';
+import { type FormEvent, useEffect, useId, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { AccountNotice } from '../account/AccountNotice';
+import { AccountPresentations } from '../account/AccountPresentations';
+import { useAccount } from '../account/AccountProvider';
 import { buttonClass } from '../components/Button';
 import { Shell } from '../components/Shell';
 import { useI18n } from '../i18n/I18nProvider';
@@ -63,6 +66,15 @@ function JoinForm() {
 function MyPresentations() {
   const { t } = useI18n();
   const [items, setItems] = useState<MyPresentation[]>(() => listMine());
+  useEffect(() => {
+    const refresh = () => setItems(listMine());
+    window.addEventListener('oyla:presentationschange', refresh);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('oyla:presentationschange', refresh);
+      window.removeEventListener('storage', refresh);
+    };
+  }, []);
   if (items.length === 0) {
     return <p className="text-muted">{t('home.mine.empty')}</p>;
   }
@@ -108,6 +120,7 @@ function MyPresentations() {
 
 export function HomePage() {
   const { t } = useI18n();
+  const account = useAccount();
   return (
     <Shell wide fill>
       {/* Centred in the first screen on desktop, so the page has no empty lower half. */}
@@ -129,12 +142,17 @@ export function HomePage() {
             {t('home.present.title')}
           </h2>
           <p className="text-muted">{t('home.present.body')}</p>
-          <div>
-            <Link to="/new" className={buttonClass('primary', 'lg')}>
-              {t('home.present.create')}
-            </Link>
-          </div>
+          <AccountNotice />
+          {(!account.enabled || account.authenticated) && !account.loading ? (
+            <div>
+              <Link to="/new" className={buttonClass('primary', 'lg')}>
+                {t('home.present.create')}
+              </Link>
+            </div>
+          ) : null}
           <h3 className="mt-4 text-lg font-semibold">{t('home.mine.title')}</h3>
+          <AccountPresentations />
+          {account.enabled ? <h4 className="font-medium">{t('account.browser')}</h4> : null}
           <MyPresentations />
         </section>
       </div>

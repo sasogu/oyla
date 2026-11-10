@@ -2,6 +2,24 @@ import type { MessageKey } from './en';
 
 /** Turkish UI strings. A missing or extra key is a type error. */
 export const tr: Record<MessageKey, string> = {
+  'account.accessTitle': 'Sahip hesabıyla giriş yap',
+  'account.accessHint':
+    'Bu sunumun sahibi olan öğretmen hesabıyla giriş yap veya henüz bir hesaba bağlı değilse orijinal özel bağlantısını aç.',
+
+  'account.signIn': 'EduTicTac ile giriş yap',
+  'account.signInHint':
+    'Sunum oluşturmak ve her cihazdan erişmek için öğretmen hesabınla giriş yap.',
+  'account.saved': 'EduTicTac hesabına kaydedildi.',
+  'account.savedHint': 'Sunumların her cihazdan erişilebilir ve kullanılmadıkları için silinmez.',
+  'account.empty': 'Bu hesapta henüz kayıtlı sunumun yok.',
+  'account.claim': 'Hesabıma kaydet',
+  'account.claimHint':
+    'Bu sunum hesabına bağlanacak. Eski özel bağlantı artık düzenleme erişimi sağlamayacak.',
+  'account.import': 'Özel bağlantıyla sunum kurtar',
+  'account.importHint': 'Özel yönetim bağlantısının tamamını yapıştır.',
+  'account.browser': 'Yalnızca bu tarayıcıda',
+  'account.unavailable': 'Hesap hizmetine ulaşılamıyor. Biraz sonra yeniden dene.',
+
   'app.tagline':
     'Sunumlar, dersler ve toplantılar için canlı anketler, kelime bulutları ve açık uçlu sorular.',
   'app.home': 'Oyla ana sayfası',

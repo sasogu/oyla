@@ -11,6 +11,8 @@ import {
 } from '@oyla/shared';
 import { type ReactNode, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
+import { AccountNotice } from '../account/AccountNotice';
+import { useAccount } from '../account/AccountProvider';
 import { api, errorCodeOf } from '../api/client';
 import { buttonClass } from '../components/Button';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -372,7 +374,8 @@ export function PresentPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { t, tn, tRich } = useI18n();
-  const [token] = useState(() => readKeyFromHash() ?? tokenFor(id));
+  const account = useAccount();
+  const [token] = useState(() => readKeyFromHash() ?? tokenFor(id) ?? '');
   const [presentation, setPresentation] = useState<PresentationDto | null>(null);
   const [loadError, setLoadError] = useState<ReturnType<typeof errorCodeOf> | null>(null);
   const [invite, setInvite] = useState(false);
@@ -387,7 +390,6 @@ export function PresentPage() {
   useEffect(() => dropHash(), []);
 
   const load = useCallback(() => {
-    if (!token) return;
     api
       .getPresentation(id, token)
       .then((loaded) => {
@@ -441,7 +443,7 @@ export function PresentPage() {
 
   /** Hides or reveals the active question's results on this screen (and every other one). */
   const toggleHidden = useCallback(() => {
-    if (!active || !token) return;
+    if (!active) return;
     setToggleError(null);
     api
       .updateQuestion(id, token, active.id, { resultsHidden: !active.resultsHidden })
@@ -516,11 +518,16 @@ export function PresentPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [go, toggleFullscreen, toggleHidden, toggleModeration, invite, showBoard, hasQuiz]);
 
-  if (!token || session.status === 'unauthorized' || loadError === 'UNAUTHORIZED') {
+  if (session.status === 'unauthorized' || loadError === 'UNAUTHORIZED') {
     return (
       <Shell>
-        <h1 className="mb-4 text-3xl font-semibold">{t('editor.missingKey.title')}</h1>
-        <p className="text-lg text-muted">{t('editor.missingKey.body')}</p>
+        <AccountNotice />
+        <h1 className="mb-4 text-3xl font-semibold">
+          {account.enabled ? t('account.accessTitle') : t('editor.missingKey.title')}
+        </h1>
+        <p className="text-lg text-muted">
+          {account.enabled ? t('account.accessHint') : t('editor.missingKey.body')}
+        </p>
       </Shell>
     );
   }

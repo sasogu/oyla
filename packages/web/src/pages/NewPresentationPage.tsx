@@ -1,6 +1,8 @@
 import { LIMITS } from '@oyla/shared';
 import { type FormEvent, useEffect, useId, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { AccountNotice } from '../account/AccountNotice';
+import { useAccount } from '../account/AccountProvider';
 import { api, errorCodeOf } from '../api/client';
 import { Button } from '../components/Button';
 import { ErrorNotice } from '../components/ErrorNotice';
@@ -11,6 +13,7 @@ import { inputClass } from '../question-types/shared';
 
 export function NewPresentationPage() {
   const { t } = useI18n();
+  const account = useAccount();
   const navigate = useNavigate();
   const id = useId();
   const [title, setTitle] = useState('');
@@ -36,14 +39,19 @@ export function NewPresentationPage() {
         title: title.trim(),
         ...(needsPassword ? { password } : {}),
       });
-      saveMine({
-        id: created.id,
-        title: title.trim(),
-        joinCode: created.joinCode,
-        adminToken: created.adminToken,
-        createdAt: Date.now(),
-      });
-      navigate(`/edit/${created.id}?new=1#key=${created.adminToken}`);
+      if (!created.accountOwned)
+        saveMine({
+          id: created.id,
+          title: title.trim(),
+          joinCode: created.joinCode,
+          adminToken: created.adminToken,
+          createdAt: Date.now(),
+        });
+      navigate(
+        created.accountOwned
+          ? `/edit/${created.id}`
+          : `/edit/${created.id}?new=1#key=${created.adminToken}`,
+      );
     } catch (caught) {
       const code = errorCodeOf(caught);
       if (code === 'CREATE_PASSWORD_REQUIRED') setNeedsPassword(true);
@@ -52,6 +60,12 @@ export function NewPresentationPage() {
     }
   };
 
+  if (account.loading || account.failed || (account.enabled && !account.authenticated))
+    return (
+      <Shell>
+        <AccountNotice />
+      </Shell>
+    );
   return (
     <Shell>
       <h1 className="mb-8 text-4xl font-semibold tracking-tight">{t('new.title')}</h1>

@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events';
 
 /** What the service tells the live layer. Listeners run synchronously. */
 interface LiveEventMap {
+  'ownership-changed': [presentationId: string];
   'state-changed': [presentationId: string];
   'presentation-changed': [presentationId: string];
   'results-changed': [presentationId: string, questionId: string];

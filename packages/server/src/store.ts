@@ -1,9 +1,10 @@
-import { and, asc, count, desc, eq, isNotNull, lt, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNotNull, lt, notExists, sql } from 'drizzle-orm';
 import type { DatabaseHandle } from './db/client';
 import {
   type ParticipantRow,
   type PresentationRow,
   participants,
+  presentationOwners,
   presentations,
   type QuestionRow,
   questions,
@@ -21,6 +22,33 @@ export function createStore({ db, sqlite }: DatabaseHandle) {
     },
 
     presentations: {
+      owner(id: string): string | null {
+        return (
+          db
+            .select()
+            .from(presentationOwners)
+            .where(eq(presentationOwners.presentationId, id))
+            .get()?.ownerId ?? null
+        );
+      },
+      claim(id: string, ownerId: string): void {
+        db.insert(presentationOwners).values({ presentationId: id, ownerId }).run();
+      },
+      mine(ownerId: string) {
+        return db
+          .select({
+            id: presentations.id,
+            title: presentations.title,
+            joinCode: presentations.joinCode,
+            createdAt: presentations.createdAt,
+            updatedAt: presentations.updatedAt,
+          })
+          .from(presentations)
+          .innerJoin(presentationOwners, eq(presentationOwners.presentationId, presentations.id))
+          .where(eq(presentationOwners.ownerId, ownerId))
+          .orderBy(desc(presentations.updatedAt), desc(presentations.id))
+          .all();
+      },
       insert(row: PresentationRow): void {
         db.insert(presentations).values(row).run();
       },
@@ -65,7 +93,17 @@ export function createStore({ db, sqlite }: DatabaseHandle) {
         return db
           .select({ id: presentations.id })
           .from(presentations)
-          .where(lt(presentations.lastActivityAt, before))
+          .where(
+            and(
+              lt(presentations.lastActivityAt, before),
+              notExists(
+                db
+                  .select()
+                  .from(presentationOwners)
+                  .where(eq(presentationOwners.presentationId, presentations.id)),
+              ),
+            ),
+          )
           .all()
           .map((row) => row.id);
       },

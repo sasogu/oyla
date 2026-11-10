@@ -7,6 +7,9 @@ import {
 } from '@oyla/shared';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { AccountChip } from '../account/AccountChip';
+import { AccountNotice } from '../account/AccountNotice';
+import { useAccount } from '../account/AccountProvider';
 import { api, errorCodeOf } from '../api/client';
 import { Button } from '../components/Button';
 import { ConfirmButton } from '../components/ConfirmButton';
@@ -93,7 +96,8 @@ export function EditorPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { t } = useI18n();
-  const [token] = useState(() => readKeyFromHash() ?? tokenFor(id));
+  const [token, setToken] = useState(() => readKeyFromHash() ?? tokenFor(id) ?? '');
+  const account = useAccount();
   const [presentation, setPresentation] = useState<PresentationDto | null>(null);
   const [loadError, setLoadError] = useState<ErrorState>(null);
   const [actionError, setActionError] = useState<ErrorState>(null);
@@ -113,15 +117,23 @@ export function EditorPage() {
   /** Loads the presentation again, e.g. after it changed in another tab. */
   const reload = useCallback(() => setVersion((v) => v + 1), []);
 
+  useEffect(() => {
+    window.addEventListener('focus', reload);
+    return () => window.removeEventListener('focus', reload);
+  }, [reload]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: `version` is a reload trigger
   useEffect(() => {
-    if (!token) return;
+    setLoadError(null);
+    setPresentation(null);
     api
       .getPresentation(id, token)
       .then((loaded) => {
         setPresentation(loaded);
         setSelectedId((current) => current ?? loaded.questions[0]?.id ?? null);
-        if (listMine().some((item) => item.id === loaded.id)) {
+        if (loaded.accountOwned) {
+          forgetMine(loaded.id);
+        } else if (listMine().some((item) => item.id === loaded.id)) {
           updateMine(loaded.id, { title: loaded.title, joinCode: loaded.joinCode });
         } else {
           saveMine({
@@ -134,7 +146,7 @@ export function EditorPage() {
         }
       })
       .catch((error) => setLoadError(errorCodeOf(error)));
-  }, [id, token, version]);
+  }, [id, token, version, account.authenticated]);
 
   const replaceQuestion = useCallback((question: QuestionDto) => {
     setPresentation((current) =>
@@ -147,14 +159,21 @@ export function EditorPage() {
     );
   }, []);
 
-  if (!token || loadError === 'UNAUTHORIZED' || loadError === 'NOT_FOUND') {
+  if (loadError === 'UNAUTHORIZED' || loadError === 'NOT_FOUND') {
     return (
       <Shell>
         <h1 className="mb-4 text-3xl font-semibold">
-          {loadError === 'NOT_FOUND' ? t('error.NOT_FOUND') : t('editor.missingKey.title')}
+          {loadError === 'NOT_FOUND'
+            ? t('error.NOT_FOUND')
+            : account.enabled
+              ? t('account.accessTitle')
+              : t('editor.missingKey.title')}
         </h1>
+        <AccountNotice />
         {loadError === 'NOT_FOUND' ? null : (
-          <p className="text-lg text-muted">{t('editor.missingKey.body')}</p>
+          <p className="text-lg text-muted">
+            {account.enabled ? t('account.accessHint') : t('editor.missingKey.body')}
+          </p>
         )}
       </Shell>
     );
@@ -312,11 +331,41 @@ export function EditorPage() {
             {t('editor.present')}
           </Button>
           <LanguageSwitcher />
+          <AccountChip />
         </div>
       </header>
 
-      {showBanner ? (
+      {showBanner && !presentation.accountOwned ? (
         <AdminLinkBanner link={adminUrl(id, token)} onDismiss={() => setShowBanner(false)} />
+      ) : null}
+
+      {account.enabled ? (
+        <section className="mx-auto mt-4 max-w-6xl px-4" aria-label={t('home.mine.title')}>
+          {presentation.accountOwned ? (
+            <p role="status">{t('account.saved')}</p>
+          ) : (
+            <div className="flex flex-col gap-3 rounded-xl border-2 border-line bg-paper p-4">
+              <p>{t('account.claimHint')}</p>
+              {account.authenticated ? (
+                <Button
+                  onClick={() =>
+                    run(
+                      api.claimPresentation(id, token).then((loaded) => {
+                        forgetMine(id);
+                        setToken('');
+                        setPresentation(loaded);
+                      }),
+                    )
+                  }
+                >
+                  {t('account.claim')}
+                </Button>
+              ) : (
+                <AccountNotice />
+              )}
+            </div>
+          )}
+        </section>
       ) : null}
 
       <div className="mx-auto grid max-w-6xl gap-6 px-4 py-6 lg:grid-cols-[300px_1fr]">
@@ -464,9 +513,11 @@ export function EditorPage() {
       </div>
 
       <footer className="mx-auto flex max-w-6xl flex-wrap gap-2 border-t-2 border-line px-4 py-6">
-        <Button variant="secondary" onClick={() => copyAdmin(adminUrl(id, token))}>
-          {copiedAdmin ? t('common.copied') : t('editor.adminLink.copy')}
-        </Button>
+        {!presentation.accountOwned ? (
+          <Button variant="secondary" onClick={() => copyAdmin(adminUrl(id, token))}>
+            {copiedAdmin ? t('common.copied') : t('editor.adminLink.copy')}
+          </Button>
+        ) : null}
         <Button variant="secondary" onClick={exportResults} disabled={questions.length === 0}>
           {t('editor.export')}
         </Button>

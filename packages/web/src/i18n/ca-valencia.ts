@@ -2,6 +2,9 @@ import type { MessageKey } from './en';
 
 /** Valencian UI strings. A missing or extra key is a type error. */
 export const caValencia: Record<MessageKey, string> = {
+  'account.presentBody':
+    'Crea enquestes en directe amb el teu compte docent d’EduTicTac i recupera-les des de qualsevol dispositiu.',
+
   'account.accessTitle': 'Accedix amb el compte propietari',
   'account.accessHint':
     'Entra amb el compte docent propietari d’esta presentació, o obri l’enllaç privat original si encara no està vinculada a un compte.',

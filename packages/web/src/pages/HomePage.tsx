@@ -141,7 +141,9 @@ export function HomePage() {
           <h2 id="present-title" className="text-2xl font-semibold">
             {t('home.present.title')}
           </h2>
-          <p className="text-muted">{t('home.present.body')}</p>
+          <p className="text-muted">
+            {account.enabled ? t('account.presentBody') : t('home.present.body')}
+          </p>
           <AccountNotice />
           {(!account.enabled || account.authenticated) && !account.loading ? (
             <div>

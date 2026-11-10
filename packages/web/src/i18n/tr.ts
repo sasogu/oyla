@@ -2,6 +2,9 @@ import type { MessageKey } from './en';
 
 /** Turkish UI strings. A missing or extra key is a type error. */
 export const tr: Record<MessageKey, string> = {
+  'account.presentBody':
+    'EduTicTac öğretmen hesabınla canlı anketler oluştur ve her cihazdan eriş.',
+
   'account.accessTitle': 'Sahip hesabıyla giriş yap',
   'account.accessHint':
     'Bu sunumun sahibi olan öğretmen hesabıyla giriş yap veya henüz bir hesaba bağlı değilse orijinal özel bağlantısını aç.',

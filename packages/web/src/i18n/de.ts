@@ -2,6 +2,9 @@ import type { MessageKey } from './en';
 
 /** German UI strings. A missing or extra key is a type error. */
 export const de: Record<MessageKey, string> = {
+  'account.presentBody':
+    'Erstelle Live-Umfragen mit deinem EduTicTac-Lehrkraftkonto und öffne sie auf jedem Gerät.',
+
   'account.accessTitle': 'Mit dem Eigentümerkonto anmelden',
   'account.accessHint':
     'Melde dich mit dem Lehrkraftkonto an, dem diese Präsentation gehört, oder öffne den ursprünglichen privaten Link, falls sie noch keinem Konto zugeordnet ist.',

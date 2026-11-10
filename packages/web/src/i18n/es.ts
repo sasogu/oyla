@@ -2,6 +2,9 @@ import type { MessageKey } from './en';
 
 /** Spanish UI strings. A missing or extra key is a type error. */
 export const es: Record<MessageKey, string> = {
+  'account.presentBody':
+    'Crea encuestas en directo con tu cuenta docente de EduTicTac y recupéralas desde cualquier dispositivo.',
+
   'account.accessTitle': 'Accede con la cuenta propietaria',
   'account.accessHint':
     'Entra con la cuenta docente propietaria de esta presentación, o abre su enlace privado original si todavía no está vinculada a una cuenta.',

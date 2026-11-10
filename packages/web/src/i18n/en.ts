@@ -3,6 +3,9 @@
  * `.other` are plural forms picked by `tn`. `{name}` placeholders are filled by `t` and `tRich`.
  */
 export const en = {
+  'account.presentBody':
+    'Create live polls with your EduTicTac teacher account and find them on any device.',
+
   'account.accessTitle': 'Sign in with the owner account',
   'account.accessHint':
     'Sign in with the teacher account that owns this presentation, or open its original private link if it has not been linked to an account.',

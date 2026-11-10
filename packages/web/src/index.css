@@ -8,6 +8,17 @@
  * come last. Answer options carry their labels, so results use one series hue per theme.
  * Contrast: text ≥ 4.5:1 on paper and page; bars, borders and the stamp ≥ 3:1.
  */
+/*
+ * The EduTicTac account chip reads these generic variable names. Map them to Oyla tokens so the
+ * chip follows each palette and light/dark mode instead of its light-only fallbacks.
+ */
+:root {
+  --panel: var(--paper);
+  --soft: var(--brand-soft);
+  --accent: var(--brand);
+  --accent-contrast: var(--on-brand);
+  --error-ink: var(--danger);
+}
 /* Emerald (default) */
 :root,
 [data-palette="emerald"] {

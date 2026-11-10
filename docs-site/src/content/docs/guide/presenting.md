@@ -1,6 +1,6 @@
 ---
 title: Presenting
-description: Create a presentation, add questions, keep the admin link and run the presenter screen.
+description: Create a presentation, add questions, keep the admin link or save it to a teacher account, and run the presenter screen.
 ---
 
 This page walks through a session from the presenter's side: create a presentation, add
@@ -17,6 +17,11 @@ audience answers.
 If the server owner set a create password, the form also asks for a **Server password**. Joining
 and answering never need a password; it only protects creating presentations.
 
+If the server has EduTicTac teacher accounts enabled, sign in with your teacher account first.
+The presentation is saved to that account, so you can open it on any device, and no admin link is
+given out. Participants still join and answer without an account. Without teacher accounts, you
+keep the private admin link described below.
+
 <img
   class="shot"
   src="/screenshots/home-en-light.png"
@@ -28,7 +33,8 @@ and answering never need a password; it only protects creating presentations.
 
 ## Keep the admin link
 
-There are no accounts. Creating a presentation gives you an **admin link** that looks like this:
+On servers without accounts, creating a presentation gives you an **admin link** that looks like
+this:
 
 ```text
 https://oyla.example.com/edit/AbC123xYz789#key=…
@@ -47,6 +53,20 @@ somewhere safe, then select **I saved it**.
 If you lose the admin link and clear your browser storage, nobody can recover it. The server only
 stores a hash of the secret part.
 :::
+
+## Save a presentation to a teacher account
+
+If the server has EduTicTac teacher accounts enabled, **My presentations** on the start page lists
+the presentations of the signed-in account. They open on any device after signing in, and the
+account is the only way to edit or present them; no admin link is needed.
+
+- A presentation created while signed in is saved to the account automatically.
+- To keep an older presentation, open it with its private admin link and select **Save to my
+  account** in the editor. You can also paste the complete private link on the start page.
+- Saving requires both the teacher session and the original private key. Afterwards the old admin
+  link stops working and open presenter screens using it are disconnected.
+- Presentations saved to an account do not expire after inactivity. Deleting one still deletes its
+  questions and answers.
 
 ## Add questions
 

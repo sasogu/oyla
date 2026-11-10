@@ -21,6 +21,10 @@ or `--env-file`, in Compose, or in your host's settings.
 | [`HOST`](#host) | `0.0.0.0` | Address to listen on |
 | [`OYLA_DB_PATH`](#oyla_db_path) | `./data/oyla.db` | SQLite file (`/data/oyla.db` in the Docker image) |
 | [`OYLA_CREATE_PASSWORD`](#oyla_create_password) | unset | Password needed to create a presentation |
+| [`OYLA_CENTRAL_SESSION_URL`](#teacher-accounts-optional) | unset | Internal identity-service origin; enables teacher accounts |
+| [`OYLA_APP_TOKEN_FILE`](#teacher-accounts-optional) | unset | File containing the application token for the identity service |
+| [`OYLA_COMMONS_URL`](#teacher-accounts-optional) | `https://commons.edutictac.es` | Public Commons origin for the account chip and login |
+| [`OYLA_PUBLIC_URL`](#teacher-accounts-optional) | `https://oyla.edutictac.es` | Public origin allowed to send writes |
 | [`OYLA_RETENTION_DAYS`](#oyla_retention_days) | `30` | Delete presentations unused for this many days; `0` keeps them |
 | [`OYLA_TRUST_PROXY`](#oyla_trust_proxy) | `false` | Number of reverse proxies in front of Oyla |
 | [`OYLA_WEB_DIST`](#oyla_web_dist) | `packages/web/dist` | Built web app to serve |
@@ -57,6 +61,42 @@ empty value counts as unset.
 
 Use it for a private instance on a public address. The comparison runs in constant time and the
 password is never logged. Keep it at most 200 characters, the longest password the API accepts.
+
+## Teacher accounts (optional)
+
+By default Oyla uses private admin links and needs no accounts. The EduTicTac deployment can
+instead use the shared account chip: teachers sign in to create and keep presentations, and only
+the owner account can edit or present them. Joining and answering never need an account.
+
+Setting `OYLA_CENTRAL_SESSION_URL` enables the integration. These variables go with it:
+
+- **`OYLA_CENTRAL_SESSION_URL`**: internal origin of the EduTicTac identity service, for example
+  `http://127.0.0.1:8005`. Oyla calls `GET /api/internal/session/resolve` with the signed session
+  cookies and the application token. Only `http` and `https` URLs without credentials are accepted.
+- **`OYLA_APP_TOKEN_FILE`**: path to a file with the application token that identifies Oyla to the
+  identity service. The token must be at least 24 characters. Keep the file outside the repository,
+  mount it read-only and never expose it through the public proxy. `OYLA_APP_TOKEN` accepts the
+  token directly, but a file is safer.
+- **`OYLA_COMMONS_URL`**: public Commons origin used for the account chip, the login link and the
+  content security policy. Default `https://commons.edutictac.es`.
+- **`OYLA_PUBLIC_URL`**: public origin of this Oyla instance. Writes must send exactly this
+  `Origin`, which protects them against cross-site requests. Default `https://oyla.edutictac.es`.
+
+With the integration enabled, `/api/config` reports `accountEnabled: true`, `/api/account/session`
+describes the current session and the start page shows the account chip. Creating a presentation
+without a teacher session is refused with HTTP 401. Accepted roles are `profesor`, `professorat`
+and `administrador`. If `OYLA_CREATE_PASSWORD` is also set, both the session and the password are
+required. Session checks apply to editing, exports and every live presenter command, and open
+presenter connections are checked periodically so a revoked session stops presenting.
+
+If the identity service cannot be reached, account access is denied (fail closed). The public join
+flow keeps working.
+
+Ownership is stored in the additive `presentation_owners` table; existing questions, answers and
+private links are untouched. Back up the database before enabling accounts. Presentations saved to
+an account are excluded from `OYLA_RETENTION_DAYS`; deleting one explicitly still removes its
+questions and answers. After presentations belong to accounts, roll back only to a version that
+enforces ownership.
 
 ## `OYLA_RETENTION_DAYS`
 

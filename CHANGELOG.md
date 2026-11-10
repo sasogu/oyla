@@ -26,6 +26,13 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - **Multi-scale question type:** people rate 2 to 8 statements on the same scale in one form, and
   the screen shows the average per statement as horizontal bars. The CSV writes an answer as
   `Pace: 4; Examples: 5`. Closes [#12].
+- **Optional EduTicTac teacher accounts:** servers configured with the shared identity service let
+  teachers sign in to create presentations. Presentations are saved to the account, open on any
+  device and do not expire after inactivity. Existing private-link presentations can be claimed
+  from the editor or by pasting their complete link on the start page. Participants still join
+  without an account. See [Configuration](/self-hosting/configuration/#teacher-accounts-optional).
+- **Spanish, Catalan and Valencian interface**, next to English, Turkish and German, with an
+  exact `ca-valencia` browser-language match and a six-language switch.
 
 ### Changed
 
@@ -36,6 +43,15 @@ and versions follow [Semantic Versioning](https://semver.org/).
   `mine`, for types that use them.
 - Migration `0006` adds `questions.answered_keys`. Question types gain `canMarkAnswered`, and
   `aggregate` gets an optional context with the answered keys. Q&A entries gain `answered`.
+- Migration `0007` adds `presentation_owners`. Account-owned presentations are exempt from the
+  inactivity cleanup and accept only the owner account; unclaimed presentations keep working with
+  their private admin link. Back up the database before enabling accounts.
+
+### Fixed
+
+- **Copy buttons over plain HTTP:** browsers only expose the Clipboard API in secure contexts, so
+  the admin and join link buttons now fall back to `document.execCommand('copy')` on `http://`
+  addresses such as a Tailnet IP.
 
 ## 0.2.0 - 2026-11-07
 

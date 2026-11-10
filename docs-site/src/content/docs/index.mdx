@@ -1,16 +1,16 @@
 ---
-title: Open-source live polls
-description: Oyla is an open-source app for live polls, word clouds, open questions and scales that you host yourself. Your audience joins from their phones with a 6-digit code.
+title: Oyla EduTicTac
+description: Oyla EduTicTac is the EduTicTac fork of Oyla, an open-source app for live polls, word clouds, open questions and scales that you host yourself. Your audience joins from their phones with a 6-digit code.
 template: splash
 hero:
   title: Live polls for talks, classes and meetings
-  tagline: "Oyla is an open-source app you host yourself: your audience joins from their phones with a 6-digit code, and the answers appear live on your screen."
+  tagline: "Oyla EduTicTac is the EduTicTac fork of Oyla, an app you host yourself: your audience joins from their phones with a 6-digit code, and the answers appear live on your screen."
   actions:
     - text: Get started
       link: /self-hosting/docker/
       icon: right-arrow
     - text: View on GitHub
-      link: https://github.com/mftnakrsu/oyla
+      link: https://github.com/sasogu/oyla
       icon: github
       variant: secondary
 ---
@@ -36,12 +36,16 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 "Oyla" means "vote!" in Turkish. You ask a question, everyone in the room answers from their
 phone, and the results build up on the big screen. It covers what you would use Mentimeter or Slido
-for, without accounts, an app to install or a subscription.
+for, without an app to install, an account for the audience or a subscription.
+
+This documentation covers the EduTicTac fork, which adds Spanish, Catalan and Valencian
+translations and optional EduTicTac teacher accounts. The original project is
+[Oyla by Meftun Akarsu](https://github.com/mftnakrsu/oyla).
 
 <CardGrid>
-  <Card title="Four question types" icon="list-format">
-    Multiple choice, word cloud, open question and scale. Each one has its own editor, phone form
-    and live results view. See [Question types](/guide/question-types/).
+  <Card title="Seven question types" icon="list-format">
+    Multiple choice, word cloud, open question, scale, Q&A, quiz and multi-scale. Each one has its
+    own editor, phone form and live results view. See [Question types](/guide/question-types/).
   </Card>
   <Card title="Join with a code or a QR code" icon="phone">
     Participants type the 6-digit code from the screen or scan the QR code. There is no app to
@@ -56,13 +60,14 @@ for, without accounts, an app to install or a subscription.
     blue. The presenter screen and every phone use it. See
     [Choose a theme](/guide/presenting/#choose-a-theme).
   </Card>
-  <Card title="No accounts" icon="padlock">
-    Creating a presentation gives you a private admin link. If you like, your server can require a
-    password for creating presentations.
+  <Card title="No accounts for participants" icon="padlock">
+    The audience joins with a code or a QR code, with no account and no app. By default, creating
+    a presentation gives you a private admin link. Servers can optionally use EduTicTac teacher
+    accounts to save presentations to an account.
   </Card>
-  <Card title="English and Turkish, light and dark" icon="translate">
-    The interface follows the browser language and the device's light or dark setting. Every page
-    has a language switch.
+  <Card title="Six languages, light and dark" icon="translate">
+    Spanish, Catalan, Valencian, English, Turkish and German. The interface follows the browser
+    language and the device's light or dark setting. Every page has a language switch.
   </Card>
   <Card title="One container, one file" icon="server">
     One Node.js process and one SQLite file, packaged as a Docker image. No database server and no

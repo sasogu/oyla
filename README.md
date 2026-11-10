@@ -2,11 +2,16 @@
   <img src="packages/web/public/favicon.svg" width="72" height="72" alt="">
 </p>
 
-<h1 align="center">Oyla</h1>
+<h1 align="center">Oyla EduTicTac</h1>
 
 <p align="center">
   Open-source live polls, word clouds and open questions for talks, classes and meetings.<br>
   Your audience joins from their phones with a 6-digit code. Results update live on your screen.
+</p>
+
+<p align="center">
+  EduTicTac fork of the open-source <a href="https://github.com/mftnakrsu/oyla">Oyla</a> project,
+  with Spanish, Catalan and Valencian translations and optional teacher accounts.
 </p>
 
 <p align="center">
